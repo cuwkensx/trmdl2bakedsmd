@@ -4,21 +4,15 @@
 
 This repo is still in development, and this guide only convers the existing functions.
 
-
-
 This repo contains scripts built on existing tools, trying to make the pipeline for ripping baked 3D-models (from Pokemon Scarlet/Violet .trmdl format) as automatic as possible. Currently it's a batch-processing pipeline.
 
 You can also go through the pipeline manually with tools listed in this document.
 
 A manual procedure can be found at [How to rip 3D Models](https://www.youtube.com/watch?v=qTtwzTEdda8) and [Baking Multiple Textures onto One Map | No Plugins](https://www.youtube.com/watch?v=9airvjDaVh4). Credit to the developers and tutorial providers.
 
-
-
 ## What's it for
 
 SMD is a simple and universal format for 3D model, and certain games (or mods) may only support a model of a single image texture. Moreover, material with just a single image texture takes less real-time computation and thus is more efficient.
-
-
 
 ## Installing dependencies
 
@@ -42,21 +36,47 @@ Blender addons (download these addons, install them in blender, and activate the
 
 Python3 (Technically blender's built-in python can help, but some scripts need to be rewritten in other scripting language if there's no available python environment other than blender's python.)
 
-
-
 ## Usage
 
 **Do not move to the next step until the previous one is over.**
+
+#### Configuration
+
+Configuration file of this repo is `config.json`, which looks like this:
+
+```json
+{
+    "work_dir":"C:/_download/mc/models/quickbms/",
+    "data_dir":"C:/_download/mc/models/pokemon/data/",
+    "blender_path":"C:/_download/blender-3.3.2-windows-x64/blender.exe",
+    "parallel":8,
+    "resolution":512,
+    "samples":32,
+    "lag":4
+}
+```
+
+1. set `work_dir` to the path you install quickbms
+
+2. set `data_dir` to the path that holds `pokemon/data` directory
+
+3. set `blender_path` to the .exe of your blender 3.3
+
+4. set `parallel` to the number of parallel processes for baking texture and converting model
+
+5. `resolution` determines the width and height of the baked image texture (resolution x resolution) 
+
+6. `samples` determines the number of samples for rendering each pixel of the resulting texture
+
+7. `lag` determines the time in seconds to wait after calling blender's baking API (explained in [Known Issue](#known-issue))
 
 #### Convert textures
 
 1. put all the files in this repo into your quickbms directory
 
-2. in `preprocess.py`, `postprocess.py`, and `bake.py`, set `work_dir` to the path you install quickbms, set `data_dir` to the path that holds `pokemon/data` directory
+2. run preprocess.py with python
 
-3. run preprocess.py with python
-
-4. manually convert .dds to .png
+3. manually convert .dds to .png
    
    1. open noesis
    
@@ -74,23 +94,17 @@ Python3 (Technically blender's built-in python can help, but some scripts need t
    
    8. wait for Noesis to finish (it will pop a message box when finishing)
 
-5. run postprocess.py with python
+4. run postprocess.py with python
 
 #### Converting model and baking textures
 
-Edit bake.py
+Just run bake.py with python
 
-1. set `blender_path` to the .exe of your blender 3.3
 
-2. set `parallel` to the number of parallel processes for baking texture and converting model
-
-3. run bake.py with python
 
 bake.py will process all the models in `data_dir`, and save the models and textures at `<work_dir>/modelsmd`, while saving the skeletons of models at `<work_dir>/fbx`.
 
 Model skeletons (in .fbx) can be used to converting animations according to [How to rip Animations](https://www.youtube.com/watch?v=dv03pqnKsGg).
-
-
 
 ## How does it work
 
@@ -108,20 +122,12 @@ Model skeletons (in .fbx) can be used to converting animations according to [How
 
 7. export the model to .smd format with [Blender Source Tools](http://steamreview.org/BlenderSourceTools/)
 
-
-
-## Knowing Issue
+## Known Issue
 
 Blender's texture baking API is asynchronous, which makes it hard to determine the time to save the baking result. Currently I use `time.sleep`, so the baking result may be unstable.
-
-
 
 ## Future work
 
 1. Automating the process of converting .tranm (or .gfbanm) animation files to blender-supporting format. Currently this can only be achieved by manually using [Switch-ToolBox](https://github.com/KillzXGaming/Switch-Toolbox), AFAIK.
 
 2. Baking different textures w.r.t. the same UV map (which is useful for baking shiny pokemons)
-
-
-
-

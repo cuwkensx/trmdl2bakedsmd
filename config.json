@@ -1,0 +1,9 @@
+{
+    "work_dir":"C:/_download/mc/models/quickbms/",
+    "data_dir":"C:/_download/mc/models/pokemon/data/",
+    "blender_path":"C:/_download/blender-3.3.2-windows-x64/blender.exe",
+    "parallel":8,
+    "resolution":512,
+    "samples":32,
+    "lag":4
+}

@@ -3,11 +3,18 @@ import subprocess
 import json
 import time
 
-blender_path = "C:/_download/blender-3.3.2-windows-x64/blender.exe"
-work_dir= 'C:/_download/mc/models/quickbms/'
-data_dir = 'C:/_download/mc/models/pokemon/data/'
-blender_cmd = blender_path+" --background --render-frame 1 df.blend -P sc.py -- {} "+f'{work_dir} {data_dir}'
-parallel=8
+with open('config.json') as fp:
+    tool_config = json.load(fp)
+
+blender_path = tool_config['blender_path']
+work_dir= tool_config['work_dir']
+data_dir = tool_config['data_dir']
+parallel=tool_config['parallel']
+resolution=tool_config['resolution']
+samples=tool_config['samples']
+lag=tool_config['lag']
+
+blender_cmd = blender_path+" --background --render-frame 1 df.blend -P sc.py -- {} "+f'{work_dir} {data_dir} {resolution} {samples} {lag}'
 
 with open(work_dir+'dex.json') as fp:
     namedex = json.load(fp)
@@ -27,4 +34,4 @@ for i,pdex in enumerate(pmlist):
     renders.append(subprocess.Popen(blender_cmd.format(pdex), cwd=work_dir))
     if (i+1)%parallel==0:
         [render.wait() for render in renders]
-        time.sleep(3)
+    time.sleep(3)

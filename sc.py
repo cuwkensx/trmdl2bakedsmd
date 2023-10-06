@@ -76,8 +76,9 @@ def loadpm(pm, resolution=512):
                 links = node_tree.links
                 links.new(tex.outputs[0], bsdf.inputs[0])
 
+reuse_uv = False
 
-def convertpm(pm, bounces=4, samples=32, resolution=512):
+def convertpm(pm, bounces=4, samples=32, resolution=512, lag=4):
     pmbase = data_dir+f"{pm}/"
     pmsubs = {}
     for pmsub in os.listdir(pmbase):
@@ -104,7 +105,7 @@ def convertpm(pm, bounces=4, samples=32, resolution=512):
         forms = [form_name, form_name+'_shiny'] if flag else [form_name]
         if form_name=='none' and len(forms)>1:
             forms[1]='shiny'
-        for fidx, form_name in enumerate(forms[:1]):
+        for fidx, form_name in enumerate(forms):
             convert_prepare(resolution)
             bpy.context.scene.cycles.samples=samples
             bpy.context.scene.cycles.diffuse_bounces=bounces
@@ -152,7 +153,7 @@ def convertpm(pm, bounces=4, samples=32, resolution=512):
                 time.sleep(0.5)
                 if img.is_dirty:
                     break
-            time.sleep(4)
+            time.sleep(lag)
             img.save() # Save image
             time.sleep(0.2)
             # merge material
@@ -185,10 +186,11 @@ def convertpm(pm, bounces=4, samples=32, resolution=512):
 
 
 pmf = 'pm{:04d}'
-pdex = int(sys.argv[-3]) 
+pdex, work_dir, data_dir, resolution, samples, lag = sys.argv[-6:]
+pdex = int(sys.argv[-5]) 
 pm=pmf.format(pdex)
-work_dir = sys.argv[-2]
-data_dir = sys.argv[-1]
+resolution = int(resolution)
+samples = int(samples)
 
 modeldir = work_dir+'modelsmd/'
 fbxdir = work_dir+'fbx/'
@@ -198,4 +200,4 @@ os.makedirs(tmpdir, exist_ok=True)
 with open(work_dir+'dex.json') as fp:
     namedex = json.load(fp)
 
-convertpm(pm)
+convertpm(pm, resolution=resolution, samples=samples, lag=lag)

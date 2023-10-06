@@ -1,8 +1,12 @@
 import os
 import subprocess
+import json
 
-work_dir= 'C:/_download/mc/models/quickbms/'
-data_dir = 'C:/_download/mc/models/pokemon/data/'
+with open('config.json') as fp:
+    tool_config = json.load(fp)
+
+work_dir= tool_config['work_dir']
+data_dir = tool_config['data_dir']
 output = 'bmsout/'
 # Texture step 2.3
 
