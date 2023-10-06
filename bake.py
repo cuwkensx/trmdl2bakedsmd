@@ -27,4 +27,4 @@ for i,pdex in enumerate(pmlist):
     renders.append(subprocess.Popen(blender_cmd.format(pdex), cwd=work_dir))
     if (i+1)%parallel==0:
         [render.wait() for render in renders]
-    time.sleep(3)
+        time.sleep(3)
